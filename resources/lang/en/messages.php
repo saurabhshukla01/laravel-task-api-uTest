@@ -4,6 +4,7 @@ return [
     'register_success' => 'User registered successfully.',
     'login_success' => 'Login successful.',
     'invalid_credentials' => 'Invalid credentials.',
+    'task_fetched' => 'Tasks fetched successfully.',
     'task_created' => 'Task created successfully.',
     'task_updated' => 'Task updated successfully.',
     'task_deleted' => 'Task deleted successfully.',

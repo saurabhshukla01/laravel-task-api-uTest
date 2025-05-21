@@ -30,10 +30,12 @@ class TaskController extends BaseController
             $orderBy = $request->get('order_by', 'due_date');
             $direction = $request->get('direction', 'asc');
 
-            $tasks = $query->orderBy($orderBy, $direction)->paginate(10);
+            // Ensure you only use 'per_page'
+            $perPage = $request->query('per_page', 5);
+            $tasks = $query->orderBy($orderBy, $direction)->paginate($perPage);
 
-            return $this->sendResponse($tasks, 'Tasks fetched successfully.');
-        } catch (Exception $e) {
+            return $this->sendResponse($tasks,  __('messages.task_fetched'), 200); 
+        } catch (\Exception $e) {
             return $this->sendError(__('messages.general_error'), [], 500);
         }
     }
