@@ -6,6 +6,7 @@ use App\Http\Controllers\API\BaseController;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Helpers\StatusCode;
 use Exception;
 
 class TaskController extends BaseController
@@ -29,14 +30,13 @@ class TaskController extends BaseController
 
             $orderBy = $request->get('order_by', 'due_date');
             $direction = $request->get('direction', 'asc');
-
-            // Ensure you only use 'per_page'
             $perPage = $request->query('per_page', 5);
+
             $tasks = $query->orderBy($orderBy, $direction)->paginate($perPage);
 
-            return $this->sendResponse($tasks,  __('messages.task_fetched'), 200); 
-        } catch (\Exception $e) {
-            return $this->sendError(__('messages.general_error'), [], 500);
+            return $this->sendResponse($tasks, __('messages.task_fetched'), StatusCode::OK);
+        } catch (Exception $e) {
+            return $this->sendError(__('messages.general_error'), [], StatusCode::SERVER_ERROR);
         }
     }
 
@@ -51,14 +51,14 @@ class TaskController extends BaseController
             ]);
 
             if ($validator->fails()) {
-                return $this->sendError(__('messages.validation_error'), $validator->errors(), 422);
+                return $this->sendError(__('messages.validation_error'), $validator->errors(), StatusCode::VALIDATION_ERROR);
             }
 
             $task = auth()->user()->tasks()->create($request->all());
 
-            return $this->sendResponse($task, __('messages.task_created'), 201);
+            return $this->sendResponse($task, __('messages.task_created'), StatusCode::CREATED);
         } catch (Exception $e) {
-            return $this->sendError(__('messages.general_error'), [], 500);
+            return $this->sendError(__('messages.general_error'), [], StatusCode::SERVER_ERROR);
         }
     }
 
@@ -68,12 +68,12 @@ class TaskController extends BaseController
             $task = auth()->user()->tasks()->find($id);
 
             if (!$task) {
-                return $this->sendError(__('messages.not_found'), [], 404);
+                return $this->sendError(__('messages.not_found'), [], StatusCode::NOT_FOUND);
             }
 
-            return $this->sendResponse($task, 'Task details.');
+            return $this->sendResponse($task, 'Task details.', StatusCode::OK);
         } catch (Exception $e) {
-            return $this->sendError(__('messages.general_error'), [], 500);
+            return $this->sendError(__('messages.general_error'), [], StatusCode::SERVER_ERROR);
         }
     }
 
@@ -83,7 +83,7 @@ class TaskController extends BaseController
             $task = auth()->user()->tasks()->find($id);
 
             if (!$task) {
-                return $this->sendError(__('messages.not_found'), [], 404);
+                return $this->sendError(__('messages.not_found'), [], StatusCode::NOT_FOUND);
             }
 
             $validator = Validator::make($request->all(), [
@@ -94,14 +94,14 @@ class TaskController extends BaseController
             ]);
 
             if ($validator->fails()) {
-                return $this->sendError(__('messages.validation_error'), $validator->errors(), 422);
+                return $this->sendError(__('messages.validation_error'), $validator->errors(), StatusCode::VALIDATION_ERROR);
             }
 
             $task->update($request->all());
 
-            return $this->sendResponse($task, __('messages.task_updated'));
+            return $this->sendResponse($task, __('messages.task_updated'), StatusCode::OK);
         } catch (Exception $e) {
-            return $this->sendError(__('messages.general_error'), [], 500);
+            return $this->sendError(__('messages.general_error'), [], StatusCode::SERVER_ERROR);
         }
     }
 
@@ -111,14 +111,14 @@ class TaskController extends BaseController
             $task = auth()->user()->tasks()->find($id);
 
             if (!$task) {
-                return $this->sendError(__('messages.not_found'), [], 404);
+                return $this->sendError(__('messages.not_found'), [], StatusCode::NOT_FOUND);
             }
 
             $task->delete();
 
-            return $this->sendResponse([], __('messages.task_deleted'));
+            return $this->sendResponse([], __('messages.task_deleted'), StatusCode::OK);
         } catch (Exception $e) {
-            return $this->sendError(__('messages.general_error'), [], 500);
+            return $this->sendError(__('messages.general_error'), [], StatusCode::SERVER_ERROR);
         }
     }
 }

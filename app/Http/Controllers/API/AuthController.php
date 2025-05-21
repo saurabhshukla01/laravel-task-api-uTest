@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\API\BaseController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Helpers\StatusCode;
 use Exception;
 
 class AuthController extends BaseController
@@ -20,7 +22,7 @@ class AuthController extends BaseController
             ]);
 
             if ($validator->fails()) {
-                return $this->sendError(__('messages.validation_error'), $validator->errors(), 422);
+                return $this->sendError(__('messages.validation_error'), $validator->errors(), StatusCode::VALIDATION_ERROR);
             }
 
             $user = User::create([
@@ -31,9 +33,9 @@ class AuthController extends BaseController
 
             $token = $user->createToken('auth_token')->plainTextToken;
 
-            return $this->sendResponse(['token' => $token], __('messages.register_success'), 201);
+            return $this->sendResponse(['token' => $token], __('messages.register_success'), StatusCode::CREATED);
         } catch (Exception $e) {
-            return $this->sendError(__('messages.general_error'), [], 500);
+            return $this->sendError(__('messages.general_error'), [], StatusCode::SERVER_ERROR);
         }
     }
 
@@ -45,14 +47,14 @@ class AuthController extends BaseController
             $user = User::where('email', $credentials['email'])->first();
 
             if (!$user || !Hash::check($credentials['password'], $user->password)) {
-                return $this->sendError(__('messages.invalid_credentials'), [], 401);
+                return $this->sendError(__('messages.invalid_credentials'), [], StatusCode::UNAUTHORIZED);
             }
 
             $token = $user->createToken('auth_token')->plainTextToken;
 
-            return $this->sendResponse(['token' => $token], __('messages.login_success'));
+            return $this->sendResponse(['token' => $token], __('messages.login_success'), StatusCode::OK);
         } catch (Exception $e) {
-            return $this->sendError(__('messages.general_error'), [], 500);
+            return $this->sendError(__('messages.general_error'), [], StatusCode::SERVER_ERROR);
         }
     }
 }

@@ -43,6 +43,13 @@ php artisan install:api
 
 ---
 
+###  6. When add helper file then need to run this command 
+```bash
+composer dump-autoload
+```
+
+---
+
 ## 📦 Database & Seeder Setup
 
 ### 1. Run Migrations & Seeders
@@ -127,6 +134,8 @@ Authorization: Bearer YOUR_TOKEN
   * `title`=keyword
   * `order_by`=due\_date|created\_at
   * `direction`=asc|desc
+  * `page`=2
+  * `per_page`=5
 
 ### Get Task by ID
 
