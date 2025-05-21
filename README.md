@@ -193,7 +193,41 @@ This project is open-source and free to use.
 
 ---
 
-## 🧰 Unit TestCase
+### 🧰 Unit TestCase
+
+🧪 Testing the API
+
+1. Postman Collection
+
+Import the included Postman collection file (Task APIs.postman_collection.json) into Postman.
+
+Test registration, login, and all task endpoints with real token.
+
+Run tests:
+
+
+```bash
+php artisan test
+```
+
+
+### Output :
+
+   PASS  Tests\Unit\ExampleTest
+  ✓ that true is true
+
+   PASS  Tests\Feature\ApiTest
+  ✓ user can register                                                                                                                                0.24s
+  ✓ user can login                                                                                                                                   0.03s
+  ✓ user can crud task                                                                                                                               0.02s
+
+   PASS  Tests\Feature\ExampleTest
+  ✓ the application returns a successful response                                                                                                    0.02s
+
+  Tests:    5 passed (14 assertions)
+  Duration: 0.46s
+
+
 
 
 
